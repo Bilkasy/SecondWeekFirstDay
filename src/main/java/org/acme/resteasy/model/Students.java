@@ -14,6 +14,16 @@ public class Students {
     public Students() {
     }
 
+    @Override
+    public String toString() {
+        return "Students{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", enrollmentYear=" + enrollmentYear +
+                ", major='" + major + '\'' +
+                '}';
+    }
+
     public Students(long id, String name, int enrollmentYear , String major) {
         this.id = id;
         this.name = name;

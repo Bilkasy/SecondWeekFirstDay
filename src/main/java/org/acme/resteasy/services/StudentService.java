@@ -11,6 +11,12 @@ import java.util.*;
 public class StudentService {
 
      Map<Long,Students> studentsMap = Database.getAllStudents();
+
+     public Map<Long,Students> getStudentsMap()
+     {
+         return studentsMap;
+     }
+
     public StudentService()
     {
         studentsMap.put(1L, new Students(1L,"Ahmed",2002,"MTE"));
@@ -21,7 +27,7 @@ public class StudentService {
     }
     public List<Students> getAllStudents ()
     {
-        return new ArrayList<Students>(studentsMap.values());
+        return new ArrayList<Students>(getStudentsMap().values());
     }
     public Students getOneStudentById(long id)
     {
@@ -43,8 +49,14 @@ public class StudentService {
     }
     public List<Students> filterStudentsByYear(int year)
     {
+        if(year<0)
+        {
+            ErrorMessage errorMessage = new ErrorMessage("There is no content for start < 0 or size < 0",404);
+            Response response = Response.status(Response.Status.NOT_FOUND).entity(errorMessage).build();
+            throw new WebApplicationException(response);
+        }
         List<Students> filterList = new ArrayList<Students>();
-        studentsMap.values().forEach(students -> {
+        getStudentsMap().values().forEach(students -> {
             if(students.getEnrollmentYear() == year)
             {
                 filterList.add(students);
@@ -55,10 +67,16 @@ public class StudentService {
 
     public List<Students> paginateStudets(int start, int size)
     {
-        List<Students> paginatedList = new ArrayList<Students>(studentsMap.values());
+        List<Students> paginatedList = new ArrayList<Students>(getStudentsMap().values());
         if (start + size > paginatedList.size())
         {
             ErrorMessage errorMessage = new ErrorMessage("You are exceeding the Paginated list limit",404);
+            Response response = Response.status(Response.Status.NOT_FOUND).entity(errorMessage).build();
+            throw new WebApplicationException(response);
+        }
+        else if(start<0 || size < 0)
+        {
+            ErrorMessage errorMessage = new ErrorMessage("There is no content for start < 0 or size < 0",404);
             Response response = Response.status(Response.Status.NOT_FOUND).entity(errorMessage).build();
             throw new WebApplicationException(response);
         }
@@ -74,7 +92,7 @@ public class StudentService {
     }
     public Students deleteStudent(long id)
     {
-        return studentsMap.remove(id);
+        return getStudentsMap().remove(id);
     }
 
 
